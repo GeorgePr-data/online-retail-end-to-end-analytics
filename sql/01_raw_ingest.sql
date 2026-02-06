@@ -1,5 +1,6 @@
 -- 01_raw_ingest.sql
 -- Purpose: Load raw Online Retail CSV with no transformations
+
 CREATE TABLE raw_online_retail (
     InvoiceNo TEXT,
     StockCode TEXT,
@@ -20,4 +21,5 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
 
 -- Sanity check: ensure data loaded
+
 SELECT COUNT(*) FROM raw_online_retail;
