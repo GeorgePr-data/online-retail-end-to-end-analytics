@@ -3,7 +3,7 @@
 
 CREATE TABLE fact_transactions AS
 SELECT
-    product_id,
+    CAST(product_id AS VARCHAR(20)) AS product_id,
     Country,
     DATE(invoice_dt) AS sales_date,
     SUM(Quantity) AS total_quantity,
