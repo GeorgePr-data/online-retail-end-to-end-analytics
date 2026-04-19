@@ -138,7 +138,26 @@ The Power BI dashboard focuses on:
 - Revenue contribution by market  
 - Behavioral patterns across orders  
 
-(Screenshots included below)
+## Dashboard Preview
+
+### Page 1 – Product Performance Overview
+![Page 1](images/page_1_product_performance.png)
+
+### Page 2 – Sales Trends & Purchasing Patterns
+![Page 2](images/page_2_sales_trends.png)
+
+### Page 3 – Customer Behavior & Basket Analysis
+![Page 3](images/page_3_customer_behavior.png)
+
+---
+
+## Key Insights (Visual Highlights)
+
+### Bulk Purchasing Behavior Driven by Low-Value Items
+![Basket Insight](images/highlight_basket_behavior.png)
+
+### Revenue Driven by Registered Customers, Higher Value per Order from Guests
+![Customer Insight](images/highlight_customer_segments.png)
 
 ---
 
