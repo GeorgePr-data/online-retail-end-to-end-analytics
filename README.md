@@ -67,7 +67,7 @@ To ensure reliable analysis, additional data validation steps were implemented:
 
 #### Outlier Handling
 - Applied distribution-based filtering  
-- Removed top 1% and bottom 1% of extreme values  
+- Applied a conservative percentile-based outlier flagging approach to isolate only the most extreme receipt-level values and reduce distortion in basket analysis.  
 - Prevented distortion in basket size and revenue analysis  
 
 ---
