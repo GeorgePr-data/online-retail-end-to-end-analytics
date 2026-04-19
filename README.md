@@ -1,133 +1,177 @@
-# Online Retail SQL Analytics Project
+# Customer Behavior & Basket Analysis – End-to-End Data Project
 
 ## Overview
-End-to-end SQL analytics project built on a real-world online retail transaction dataset.
+This project started as a SQL analytics exercise and evolved into a full end-to-end data workflow, transforming messy transactional data into a structured analytical model and an interactive Power BI dashboard.
 
-The focus of the project is not just querying data, but structuring raw transactional data into a clean analytical model that can support reliable analysis and future BI use cases.
+The objective is to simulate a real-world data pipeline:
+raw data → cleaning & validation → analytical modeling → business insights
+
+---
 
 ## Dataset
 Public online retail dataset (~500k rows).
 
-- Each row represents a **product line within a customer invoice**
-- A single invoice may contain multiple products (multiple rows)
-- Data includes sales quantities, prices, timestamps, and countries
+- Each row represents a product line within a customer invoice  
+- One invoice may contain multiple products  
+- Data includes quantities, prices, timestamps, and country  
+
+---
 
 ## Business Objective
+The goal is to transform raw transactional data into a reliable analytical model and extract meaningful business insights.
 
-The goal of this project is to simulate how raw retail transaction data can be transformed into a structured model that supports real analytical and BI use cases.
+Key questions addressed:
 
-It is designed to support questions such as:
+- What is the typical basket size and value?
+- Do customers behave like individual buyers or businesses?
+- How is revenue distributed across customer types?
+- Are there patterns of bulk purchasing behavior?
+- Which segments and markets drive revenue?
 
-- Which products drive the highest revenue over time?
-- How does customer purchase behavior vary at invoice level?
-- How should transaction data be structured to support both operational analysis and reporting?
-
-## Dataset
-
-Public online retail transaction dataset (~500k rows).
-
-Each row represents a product line within a customer invoice:
-
-- one invoice can include multiple products
-- data is recorded at line level (not basket level)
-- includes quantities, prices, timestamps, and country
+---
 
 ## Data Pipeline
 
-### Raw Layer
-**`raw_online_retail`**
-- Direct CSV ingestion
-- No transformations applied
-- Preserves original data for traceability
+### 1. Raw Layer
+**raw_online_retail**
 
-### Staging Layer
-**`stg_transactions`**
+- Direct CSV ingestion  
+- No transformations applied  
+- Preserves original data for traceability  
 
-Key transformations: 
+---
 
-- Parsed text-based dates into proper datetime values
-- Parsed text-based prices into numeric values
-- Removed non-product rows (fees, postage, adjustments)
-- applied filtering after parsing to avoid casting issues
+### 2. Staging Layer
+**stg_transactions**
 
-### Fact Tables
+Transformations applied:
 
-**`fact_transactions`**
-- Grain: **product × country × day**
+- Parsed text-based dates into datetime format  
+- Converted price fields into numeric values  
+- Removed non-product rows (fees, postage, adjustments)  
+- Applied filtering after parsing to avoid casting issues  
+
+---
+
+### 3. Data Cleaning & Validation (NEW)
+
+To ensure reliable analysis, additional data validation steps were implemented:
+
+#### Return Handling
+- Identified return transactions using invoice patterns (prefix "C")
+- Matched returns to original purchases using invoice number proximity (±5 range)
+- Validated matches based on:
+  - equal and opposite quantities
+  - equal and opposite revenue
+- Flagged and excluded confirmed return pairs from analysis
+
+#### Outlier Handling
+- Applied distribution-based filtering  
+- Removed top 1% and bottom 1% of extreme values  
+- Prevented distortion in basket size and revenue analysis  
+
+---
+
+### 4. Fact Tables
+
+#### fact_transactions
+- Grain: product × country × day  
 - Metrics:
-  - total_quantity
-  - total_revenue
-- Supports product performance and time-series analysis
+  - total_quantity  
+  - total_revenue  
 
-**`fact_receipts`**
-- Grain: **invoice (receipt)**
+Supports product performance and time-based analysis  
+
+---
+
+#### fact_receipts
+- Grain: invoice (receipt)  
 - Metrics:
-  - receipt_quantity
-  - receipt_revenue
-  - distinct_products
-- Supports basket and customer behavior analysis
+  - total_items  
+  - receipt_revenue  
+  - distinct_products  
 
-### Dimension Tables
+Supports basket-level and customer behavior analysis  
 
-**`dim_product`**
-- One row per product
-- Deduplicated by product_id
-- Deterministic description selection
+---
 
-**`dim_date`**
-- One row per calendar date
-- Includes year, month, quarter, and weekday attributes
+### 5. Dimension Tables
 
-## Schema Design
+#### dim_product
+- One row per product  
+- Deduplicated using product_id  
 
-The model follows a star-schema approach with multiple fact tables at different grains:
+#### dim_date
+- One row per date  
+- Includes year, month, quarter, weekday  
 
-- product-level fact table for trend analysis
-- invoice-level fact table for basket and customer behavior
+---
 
-This separation allows more flexible analysis compared to a single flat table and better reflects real BI modeling practices.
+## Feature Engineering
 
-## Key Analytical Questions
+Additional analytical features were created for BI:
 
-This project focuses on four main analytical areas:
+- Basket Size Buckets (items per order)  
+- Basket Value Buckets (€ per order)  
+- Customer Type segmentation (Registered vs Guest)  
+- Outlier flag for controlled analysis  
 
-1. Product Performance
-Which products drive the highest quantity and revenue over time?
+---
 
-2. Time-Based Trends
-How do sales evolve across months, quarters, and weekdays?
+## Key Insights
 
-3. Basket / Invoice Behavior
-What does invoice-level data reveal about order size and product mix?
+- Most orders contain **100–300 items**, indicating medium-to-large basket sizes  
+- Most orders fall within **€0–300**, despite large item counts  
+- This suggests **bulk purchasing of low-priced products**  
+- Customer behavior resembles **small business / B2B patterns** rather than individual consumers  
+- Registered customers dominate both **order volume and revenue contribution**  
+- The UK market drives the majority of total revenue  
 
-4. Data Modeling for BI
-How should transactional data be structured to support consistent reporting?
+---
 
-## What I Focused On
+## Dashboard
 
-In this project, I focused on building a structured analytical layer rather than just writing queries.
+The Power BI dashboard focuses on:
 
-Specifically:
+- Basket size and value distribution (histogram-style analysis)  
+- Customer segmentation  
+- Revenue contribution by market  
+- Behavioral patterns across orders  
 
-- transforming raw transactional data into clean, usable tables
-- designing fact tables at different grains depending on analytical needs
-- separating product-level and invoice-level analysis
-- handling real-world data issues such as inconsistent formats and non-product rows
+(Screenshots included below)
 
-The goal was to simulate how raw retail data can be prepared for reliable analysis and future BI reporting.
+---
+
+## SQL Queries
+
+This repository includes SQL scripts used for:
+
+- Data cleaning and transformation  
+- Return matching logic  
+- Outlier detection and filtering  
+- Fact and dimension table creation  
+
+---
+
+## Tools & Skills
+
+- SQL (MySQL)
+- Power BI (data modeling, DAX, visualization)
+- Data cleaning & validation
+- Analytical thinking & business interpretation
+
+---
 
 ## Key Learnings
 
-- filtering conditions should be applied after parsing when working with text-based numeric fields
-- product descriptions may not be consistent, so stable identifiers are critical
-- different analytical questions require different data grains
-- real-world datasets require explicit cleaning and validation steps
+- Real-world datasets require explicit validation (returns, anomalies)  
+- Data cleaning decisions directly impact analytical outcomes  
+- Different analytical questions require different data grains  
+- Structured modeling enables scalable BI reporting  
+- Insight generation is as important as technical implementation  
 
-## Tools
-- MySQL
-- GitHub
+---
 
-## Next Steps
-- connect the model to Power BI for reporting
-- extend with additional dimensions (e.g. customer segmentation)
-- build customer-level analysis (repeat behavior, segmentation)
+## Conclusion
+
+This project demonstrates the ability to transform raw transactional data into structured, reliable, and insight-driven analysis, bridging the gap between data engineering, analytics, and business decision-making.
