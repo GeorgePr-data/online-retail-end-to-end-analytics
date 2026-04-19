@@ -66,9 +66,9 @@ To ensure reliable analysis, additional data validation steps were implemented:
 - Flagged and excluded confirmed return pairs from analysis
 
 #### Outlier Handling
-- Applied distribution-based filtering  
-- Applied a conservative percentile-based outlier flagging approach to isolate only the most extreme receipt-level values and reduce distortion in basket analysis.  
-- Prevented distortion in basket size and revenue analysis  
+- Applied a percentile-based approach to identify extreme values  
+- Flagged only the most extreme low and high cases (conservative filtering)  
+- Prevented distortion in basket size and revenue analysis while preserving valid transactions    
 
 ---
 
